@@ -68,7 +68,7 @@ async def contact(interaction: discord.Interaction):
     await interaction.response.send_message(contact_info)
     
 # Start de bot
-bot.run("MTM2MTk3NDAzNjQyMjIwMTM4NA.GgA2Pv.afxbiKpRr-EGc6-0Yn9gjFX1t9P1erX9rGdTCU")  # Vergeet je token niet in te vullen!
+bot.run("MTM2MTk3NDAzNjQyMjIwMTM4NA.GVvq-F.C22fIfMfMyFyiv3FTNQzZAAUeR_bj43idbibPw")  # Vergeet je token niet in te vullen!
 
 
 
