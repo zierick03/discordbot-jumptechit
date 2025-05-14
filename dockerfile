@@ -1,5 +1,5 @@
 # Gebruik een officieel Python 3.11.9 image
-FROM python:3.11.9-alpine
+FROM python:3.10.12
 
 # Maak een directory voor je app in de container
 WORKDIR /bot
