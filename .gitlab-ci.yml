@@ -5,7 +5,7 @@ services:
 
 variables:
   DOCKER_DRIVER: overlay2
-
+  DOCKER_HOST: tcp://docker:2375  # Dit is de juiste instelling voor Docker-in-Docker
 
 before_script:
   - apk update
