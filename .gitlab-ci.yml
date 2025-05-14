@@ -1,27 +1,16 @@
-image: docker:latest  # Gebruik een simpele Docker image
+image: docker:latest
 
 services:
-  - docker:dind  # Docker-in-Docker service voor het uitvoeren van Docker-in-Docker
+  - docker:dind
 
 stages:
-  - build
-  - push
+  - test
 
-before_script:
-before_script:
+variables:
+  DOCKER_DRIVER: overlay2
 
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
-
-
-build:
-  stage: build
+test_login:
+  stage: test
   script:
-    - docker build -t zierick03/discordbot:latest .  # Bouw de Docker image
-    - docker tag discordbot zierick03/discordbot:latest  # Tag de image met je Docker Hub repo
-
-push:
-  stage: push
-  only:
-    - main  # Push alleen naar Docker Hub als de branch 'main' is
-  script:
-    - docker push zierick03/discordbot:latest  # Push de image naar Docker Hub
+    - echo "USERNAME: $DOCKER_USERNAME"
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
