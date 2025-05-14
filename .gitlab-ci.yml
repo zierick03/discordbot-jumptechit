@@ -5,16 +5,30 @@ services:
 
 variables:
   DOCKER_DRIVER: overlay2
+  IMAGE_NAME: zierick03/discordbot
 
 before_script:
-  - apk add --no-cache python3 py3-pip  # Python installeren
+  - apk add --no-cache python3 py3-pip
   - python3 --version
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
 stages:
   - build
+  - test
+  - push
 
 build:
   stage: build
   script:
-    - echo "Pipeline werkt met Docker en Python"
+    - docker build -t $IMAGE_NAME:latest .
+    - docker images
+
+test:
+  stage: test
+  script:
+    - docker run --rm $IMAGE_NAME:latest python3 --version
+
+push:
+  stage: push
+  script:
+    - docker push $IMAGE_NAME:latest
