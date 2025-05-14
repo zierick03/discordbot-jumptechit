@@ -1,6 +1,12 @@
 # Vereiste packages installeren:
 # pip install discord.py mysql-connector-python
 
+
+#aanmaken database
+
+
+
+
 import discord
 import random
 import mysql.connector
@@ -111,3 +117,6 @@ async def faq_antwoord(interaction: discord.Interaction, nummer: int):
 
 # Start de bot
 bot.run("MTM2MTk3NDAzNjQyMjIwMTM4NA.GVvq-F.C22fIfMfMyFyiv3FTNQzZAAUeR_bj43idbibPw")  # Vergeet je token niet te beveiligen!
+
+
+

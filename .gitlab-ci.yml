@@ -20,6 +20,7 @@ stages:
 build:
   stage: build
   script:
+    - docker info # controle of doccker deamon bereikbaar is 
     - docker build -t zierick03/discordbot:latest .
     - docker images
 
