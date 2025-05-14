@@ -1,4 +1,4 @@
-image: python:3.11
+image: docker:latest
 
 services:
   - docker:dind
@@ -7,6 +7,8 @@ variables:
   DOCKER_DRIVER: overlay2
 
 before_script:
+  - apk add --no-cache python3 py3-pip  # Python installeren
+  - python3 --version
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
 stages:
@@ -15,5 +17,4 @@ stages:
 build:
   stage: build
   script:
-    - python --version
-    - echo "Pipeline werkt!"
+    - echo "Pipeline werkt met Docker en Python"
