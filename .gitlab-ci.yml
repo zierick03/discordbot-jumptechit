@@ -8,10 +8,9 @@ variables:
   IMAGE_NAME: zierick03/discordbot
 
 before_script:
-  - apk add --no-cache python3 py3-pip
-  - python3 --version
-  # Login via veilige methode zonder gebruik van '-p'
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - apk update
+  - apk add --no-cache py3-pip python3-dev libffi-dev gcc libc-dev mariadb-dev
+
 
 stages:
   - build
