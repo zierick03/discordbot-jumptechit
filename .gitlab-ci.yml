@@ -1,24 +1,33 @@
+image: docker:latest
+
+services:
+  - name: docker:dind
+    alias: docker   # ← dit zorgt dat de hostnaam 'docker' werkt
+
+variables:
+  DOCKER_TLS_CERTDIR: ""
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_DRIVER: overlay2
+
+before_script:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
+
 stages:
   - build
   - deploy
 
-variables:
-  IMAGE: "$DOCKER_USER/discordbot:latest"
-
 build:
   stage: build
   script:
-    - echo "Controleren of Docker-daemon draait"
-    - docker info
-    - echo "Bouwen van Docker-image"
-    - docker build -t "$IMAGE" .
+    - echo "Controleren of Docker Daemon via DinD bereikbaar is"
+    - docker info       # client zal nu verbinden met tcp://docker:2375
+    - docker build -t "$DOCKER_USER/discordbot:latest" .
+    - docker images
 
 deploy:
   stage: deploy
   only:
     - main
   script:
-    - echo "Inloggen op Docker Hub"
     - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
-    - echo "Pushen van $IMAGE"
-    - docker push "$IMAGE"
+    - docker push "$DOCKER_USER/discordbot:latest"
