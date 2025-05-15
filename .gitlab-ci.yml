@@ -24,7 +24,7 @@ test:
 build:
   stage: build
   script:
-    - docker build -t zierick03/discordbot:latest .
+    - docker build -t $DOCKER_USER/discordbot:latest .
     - docker images
 
 deploy:
@@ -32,4 +32,12 @@ deploy:
   only:
     - main  # alleen uitvoeren vanaf de 'main' branch
   script:
-    - docker push zierick03/discordbot:latest
+    - docker build -t $DOCKER_USER/discordbot:latest .  
+    - docker push $DOCKER_USER/discordbot:latest
+
+
+
+
+
+
+
