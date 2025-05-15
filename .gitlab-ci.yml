@@ -1,19 +1,25 @@
 image: docker:latest
 
 services:
-  - name: docker:dind
-    command: ["--tls=false"]
+  - docker:dind
 
 variables:
-  DOCKER_HOST: tcp://docker:2375
-  DOCKER_TLS_CERTDIR: ""
+  DOCKER_DRIVER: overlay2
+  DOCKER_TLS_CERTDIR: ""  # voorkomt TLS problemen bij dind
 
 before_script:
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
 
 stages:
+  - test
   - build
   - deploy
+
+test:
+  stage: test
+  script:
+    - docker info
+    - docker version
 
 build:
   stage: build
@@ -23,56 +29,10 @@ build:
 
 deploy:
   stage: deploy
+  only:
+    - main  # alleen uitvoeren vanaf de 'main' branch
   script:
     - docker push $DOCKER_USER/discordbot:latest
-  only:
-    - main
-
-
-
-
-
-
-
-
-
-
-# image: docker:latest
-
-# services:
-#   - docker:dind
-
-# variables:
-#   DOCKER_DRIVER: overlay2
-#   DOCKER_TLS_CERTDIR: ""  # voorkomt TLS problemen bij dind
-
-# before_script:
-#   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
-
-# stages:
-#   - test
-#   - build
-#   - deploy
-
-# test:
-#   stage: test
-#   script:
-#     - docker info
-#     - docker version
-
-# build:
-#   stage: build
-#   script:
-#     - docker build -t $DOCKER_USER/discordbot:latest .
-#     - docker images
-
-# deploy:
-#   stage: deploy
-#   only:
-#     - main  # alleen uitvoeren vanaf de 'main' branch
-#   script:
-#     - docker build -t $DOCKER_USER/discordbot:latest .  
-#     - docker push $DOCKER_USER/discordbot:latest
 
 
 
