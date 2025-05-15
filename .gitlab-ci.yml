@@ -1,6 +1,16 @@
-# .gitlab-ci.yml
-# Zorg dat deze tag overeenkomt met wat je bij register hebt ingesteld:
-# bijv. tags: ["shell"]
+image: docker:latest
+
+services:
+  - name: docker:dind
+    command: ["--tls=false"]
+
+variables:
+  DOCKER_TLS_CERTDIR: ""
+  DOCKER_HOST: tcp://docker:2375
+  DOCKER_DRIVER: overlay2
+
+before_script:
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
 
 stages:
   - build
@@ -8,19 +18,15 @@ stages:
 
 build:
   stage: build
-  tags:
-    - shell
+  privileged: true
   script:
-    - docker info
-    - docker version
     - docker build -t $DOCKER_USER/discordbot:latest .
+    - docker push $DOCKER_USER/discordbot:latest
 
 deploy:
   stage: deploy
-  tags:
-    - shell
+  privileged: true
+  script:
+    - echo "Deploying..."
   only:
     - main
-  script:
-    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
-    - docker push $DOCKER_USER/discordbot:latest
