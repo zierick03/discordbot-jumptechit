@@ -8,7 +8,7 @@ variables:
   DOCKER_TLS_CERTDIR: ""  # voorkomt TLS problemen bij dind
 
 before_script:
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USER" --password-stdin
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
 stages:
   - test
@@ -30,6 +30,6 @@ build:
 deploy:
   stage: deploy
   only:
-    - main  # alleen pushen vanaf de 'main' branch
+    - main  # alleen uitvoeren vanaf de 'main' branch
   script:
     - docker push zierick03/discordbot:latest
