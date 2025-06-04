@@ -209,34 +209,8 @@ async def update(interaction: discord.Interaction, titel: str, inhoud: str):
     await interaction.response.send_message("✅ Aankondiging geplaatst!", ephemeral=True)
 
 
-#poll lijsten 
-@bot.tree.command(name="poll", description="Maak een poll met 2-10 opties")
-async def poll(interaction: discord.Interaction, vraag: str, opties: str):
-    optie_lijst = [opt.strip() for opt in opties.split(',')]
 
-    if len(optie_lijst) < 2 or len(optie_lijst) > 10:
-        await interaction.response.send_message(
-            "❌ Geef tussen de 2 en 10 opties op, gescheiden door komma's.", ephemeral=True
-        )
-        return
 
-    emoji_list = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟']
-
-    beschrijving = ""
-    for i, optie in enumerate(optie_lijst):
-        beschrijving += f"{emoji_list[i]} {optie}\n"
-
-    embed = discord.Embed(
-        title="📊 Poll",
-        description=f"**{vraag}**\n\n{beschrijving}",
-        color=discord.Color.blue()
-    )
-    embed.set_footer(text=f"Gemaakt door: {interaction.user.display_name}")
-
-    poll_bericht = await interaction.response.send_message(embed=embed, fetch_reply=True)
-
-    for i in range(len(optie_lijst)):
-        await poll_bericht.add_reaction(emoji_list[i])
 
 
 
@@ -250,7 +224,32 @@ bot.run("MTM2MTk3NDAzNjQyMjIwMTM4NA.GVvq-F.C22fIfMfMyFyiv3FTNQzZAAUeR_bj43idbibP
 #werkt nog niet 
 
 
-# Kanaal-ID waar dashboard gepost wordt
+#poll lijsten 
+@bot.tree.command(name="poll", description="Maak een poll met 2-10 opties, gescheiden door komma's")
+async def poll(interaction: discord.Interaction, vraag: str, opties: str):
+    optie_lijst = [opt.strip() for opt in opties.split(",")]
+    if len(optie_lijst) < 2 or len(optie_lijst) > 10:
+        await interaction.response.send_message("❌ Geef tussen de 2 en 10 opties op, gescheiden door komma's.", ephemeral=True)
+        return
+    emoji_list = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟']
+    beschrijving = ""
+    for i, optie in enumerate(optie_lijst):
+        beschrijving += f"{emoji_list[i]} {optie}\n"
+    embed = discord.Embed(
+        title="📊 Poll",
+        description=f"**{vraag}**\n\n{beschrijving}",
+        color=discord.Color.blue()
+    )
+    embed.set_footer(text=f"Gemaakt door: {interaction.user.display_name}")
+    poll_bericht = await interaction.response.send_message(embed=embed, fetch_reply=True)
+    for i in range(len(optie_lijst)):
+        await poll_bericht.add_reaction(emoji_list[i])
+
+
+
+
+
+# Kanaal-ID waar dashboard gepost wordt aankondigings kanaalen (updates)
 DASHBOARD_CHANNEL_ID = 1379791761731358730  # Vervang door jouw kanaal-ID
 
 dashboard_message = None  # Dit bewaren we zodat we het bericht kunnen updaten
