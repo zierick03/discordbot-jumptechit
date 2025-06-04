@@ -241,7 +241,7 @@ async def update(interaction: discord.Interaction, titel: str, inhoud: str):
 #     await interaction.response.send_message("✅ Dashboard is bijgewerkt!", ephemeral=True)
 
 
-#als je hem opstart 
+#als je hem opstart dashboard
 async def send_or_update_dashboard():
     global dashboard_message
     channel = bot.get_channel(1379833746701684776)
@@ -263,7 +263,7 @@ async def send_or_update_dashboard():
             dashboard_message = await channel.send(embed=embed)
 
 
-# Kanaal-ID waar dashboard gepost wordt aankondigings kanaalen (updates)
+# Kanaal-ID waar dashboard gepost wordt aankondigings kanaalen (updates) bij elke minuut 
 DASHBOARD_CHANNEL_ID = 1379833746701684776  # Vervang door jouw kanaal-ID
 
 dashboard_message = None  # Dit bewaren we zodat we het bericht kunnen updaten
