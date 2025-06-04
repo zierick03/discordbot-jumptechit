@@ -347,21 +347,7 @@ async def poll(interaction: discord.Interaction, vraag: str, opties: str):
     for i in range(len(optie_lijst)):
         await bericht.add_reaction(emoji_list[i])
 
-        
-  
- 
-
-
-
-
-
-            
-
-
-            
-            
-            
-            
+                  
 # Event: Bot is online
 @bot.event
 async def on_ready():
