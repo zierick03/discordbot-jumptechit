@@ -13,6 +13,8 @@
 # /contact            – Toont contactinformatie van JumpTechIT
 # /faq                – Toont een lijst met veelgestelde vragen uit de database
 # /faq_antwoord       – Geeft antwoord op een specifieke veelgestelde vraag
+#/poll vraag:Wat wil je eten? opties:Pizza,Sushi,Burger
+
 
 # /systemscan         – Haalt systeeminformatie op via het 'systeminfo'-commando (Windows-only)
 # /myip               – Toont het externe IP-adres van de machine waarop de bot draait
@@ -144,6 +146,9 @@ async def systemscan(ctx):
     except Exception as e:
         await ctx.send(f"❌ Onbekende fout:\n```{str(e)}```")
 
+
+
+
 # Slash-commando voor FAQ-lijst
 @bot.tree.command(name="faq", description="Toon een lijst met veelgestelde vragen")
 async def faq(interaction: discord.Interaction):
@@ -177,7 +182,46 @@ async def faq_antwoord(interaction: discord.Interaction, nummer: int):
     else:
         await interaction.response.send_message("❌ Geen antwoord gevonden voor vraag {nummer}.")
 
+
 # Start de bot
 bot.run("MTM2MTk3NDAzNjQyMjIwMTM4NA.GVvq-F.C22fIfMfMyFyiv3FTNQzZAAUeR_bj43idbibPw")  # Vergeet je token niet te beveiligen!
+
+
+
+# #poll lijsten 
+# @bot.tree.command(name="poll", description="Maak een poll met 2-10 opties")
+# async def poll(interaction: discord.Interaction, vraag: str, opties: str):
+#     """
+#     Slash-commando om een poll te maken.
+#     Voorbeeldgebruik: /poll vraag:Wat is je favoriete kleur? opties:Rood,Blauw,Groen
+#     """
+#     optie_lijst = [opt.strip() for opt in opties.split(',')]
+    
+#     if len(optie_lijst) < 2 or len(optie_lijst) > 10:
+#         await interaction.response.send_message("❌ Geef tussen de 2 en 10 opties op, gescheiden door komma's.", ephemeral=True)
+#         return
+
+#     emoji_list = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟']
+
+#     beschrijving = ""
+#     for i, optie in enumerate(optie_lijst):
+#         beschrijving += f"{emoji_list[i]} {optie}\n"
+
+#     embed = discord.Embed(
+#         title="📊 Poll",
+#         description=f"**{vraag}**\n\n{beschrijving}",
+#         color=discord.Color.blue()
+#     )
+#     embed.set_footer(text=f"Gemaakt door: {interaction.user.display_name}")
+
+#     poll_bericht = await interaction.channel.send(embed=embed)
+
+#     for i in range(len(optie_lijst)):
+#         await poll_bericht.add_reaction(emoji_list[i])
+
+#     await interaction.response.send_message("✅ Poll geplaatst!", ephemeral=True)
+
+
+
 
 
