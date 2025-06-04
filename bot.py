@@ -1,5 +1,7 @@
 # Vereiste packages installeren:
 # pip install discord.py mysql-connector-python
+#pip install psutil
+
 
 
 #aanmaken database
@@ -13,6 +15,9 @@
 # /contact            – Toont contactinformatie van JumpTechIT
 # /faq                – Toont een lijst met veelgestelde vragen uit de database
 # /faq_antwoord       – Geeft antwoord op een specifieke veelgestelde vraag
+
+
+#/update titel:Belangrijke Update inhoud:De nieuwe feature is live vanaf maandag!
 #/poll vraag:Wat wil je eten? opties:Pizza,Sushi,Burger
 
 
@@ -29,6 +34,12 @@ import urllib.request  # Voor IP-opvraag
 import mysql.connector
 from discord.ext import commands
 import subprocess
+from discord.ext import tasks
+import psutil
+import datetime
+
+
+
 
 # MySQL-verbinding
 def get_mysql_connection():
@@ -183,43 +194,114 @@ async def faq_antwoord(interaction: discord.Interaction, nummer: int):
         await interaction.response.send_message("❌ Geen antwoord gevonden voor vraag {nummer}.")
 
 
+#automatisch nieuwsupdates 
+@bot.tree.command(name="update", description="Post een nieuwsupdate of aankondiging")
+async def update(interaction: discord.Interaction, titel: str, inhoud: str):
+    embed = discord.Embed(
+        title=f"📢 {titel}",
+        description=inhoud,
+        color=discord.Color.orange()
+    )
+    embed.set_footer(text=f"Gepost door: {interaction.user.display_name}")
+    embed.timestamp = interaction.created_at
+
+    await interaction.channel.send(embed=embed)
+    await interaction.response.send_message("✅ Aankondiging geplaatst!", ephemeral=True)
+
+
 # Start de bot
 bot.run("MTM2MTk3NDAzNjQyMjIwMTM4NA.GVvq-F.C22fIfMfMyFyiv3FTNQzZAAUeR_bj43idbibPw")  # Vergeet je token niet te beveiligen!
 
 
 
-# #poll lijsten 
-# @bot.tree.command(name="poll", description="Maak een poll met 2-10 opties")
-# async def poll(interaction: discord.Interaction, vraag: str, opties: str):
-#     """
-#     Slash-commando om een poll te maken.
-#     Voorbeeldgebruik: /poll vraag:Wat is je favoriete kleur? opties:Rood,Blauw,Groen
-#     """
-#     optie_lijst = [opt.strip() for opt in opties.split(',')]
+
+#werkt nog niet 
+
+
+# Kanaal-ID waar dashboard gepost wordt
+DASHBOARD_CHANNEL_ID = 1379791761731358730  # Vervang door jouw kanaal-ID
+
+dashboard_message = None  # Dit bewaren we zodat we het bericht kunnen updaten
+
+def get_system_stats():
+    cpu_percent = psutil.cpu_percent(interval=1)
+    mem = psutil.virtual_memory()
+    uptime_seconds = (datetime.datetime.now() - datetime.datetime.fromtimestamp(psutil.boot_time())).total_seconds()
+    uptime_str = str(datetime.timedelta(seconds=int(uptime_seconds)))
+
+    stats = (
+        f"**Systeemstatus (Realtime)**\n"
+        f"CPU gebruik: {cpu_percent}%\n"
+        f"Geheugen gebruik: {mem.percent}% ({mem.used // (1024*1024)} MB gebruikt van {mem.total // (1024*1024)} MB)\n"
+        f"Systeem uptime: {uptime_str}\n"
+    )
+    return stats
+
+@tasks.loop(minutes=1)
+async def update_dashboard():
+    global dashboard_message
+    channel = bot.get_channel(DASHBOARD_CHANNEL_ID)
+    if channel is None:
+        print("⚠️ Dashboard kanaal niet gevonden!")
+        return
+
+    stats_text = get_system_stats()
+    embed = discord.Embed(title="📊 Dashboard", description=stats_text, color=discord.Color.green())
+    embed.timestamp = datetime.datetime.utcnow()
+
+    if dashboard_message is None:
+        dashboard_message = await channel.send(embed=embed)
+    else:
+        try:
+            await dashboard_message.edit(embed=embed)
+        except discord.NotFound:
+            # Bericht is verwijderd, stuur een nieuw bericht
+            dashboard_message = await channel.send(embed=embed)
+
+@bot.event
+async def on_ready():
+    print(f'✅ Bot is online als: {bot.user}')
+    await bot.tree.sync()
+    print("✅ Slash-commando's zijn gesynchroniseerd!")
+    update_dashboard.start()
+
+
+
+
+
+
+#poll lijsten 
+@bot.tree.command(name="poll", description="Maak een poll met 2-10 opties")
+async def poll(interaction: discord.Interaction, vraag: str, opties: str):
+    """
+    Slash-commando om een poll te maken.
+    Voorbeeldgebruik: /poll vraag:Wat is je favoriete kleur? opties:Rood,Blauw,Groen
+    """
+    optie_lijst = [opt.strip() for opt in opties.split(',')]
     
-#     if len(optie_lijst) < 2 or len(optie_lijst) > 10:
-#         await interaction.response.send_message("❌ Geef tussen de 2 en 10 opties op, gescheiden door komma's.", ephemeral=True)
-#         return
+    if len(optie_lijst) < 2 or len(optie_lijst) > 10:
+        await interaction.response.send_message("❌ Geef tussen de 2 en 10 opties op, gescheiden door komma's.", ephemeral=True)
+        return
 
-#     emoji_list = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟']
+    emoji_list = ['1️⃣', '2️⃣', '3️⃣', '4️⃣', '5️⃣', '6️⃣', '7️⃣', '8️⃣', '9️⃣', '🔟']
 
-#     beschrijving = ""
-#     for i, optie in enumerate(optie_lijst):
-#         beschrijving += f"{emoji_list[i]} {optie}\n"
+    beschrijving = ""
+    for i, optie in enumerate(optie_lijst):
+        beschrijving += f"{emoji_list[i]} {optie}\n"
 
-#     embed = discord.Embed(
-#         title="📊 Poll",
-#         description=f"**{vraag}**\n\n{beschrijving}",
-#         color=discord.Color.blue()
-#     )
-#     embed.set_footer(text=f"Gemaakt door: {interaction.user.display_name}")
+    embed = discord.Embed(
+        title="📊 Poll",
+        description=f"**{vraag}**\n\n{beschrijving}",
+        color=discord.Color.blue()
+    )
+    embed.set_footer(text=f"Gemaakt door: {interaction.user.display_name}")
 
-#     poll_bericht = await interaction.channel.send(embed=embed)
+    poll_bericht = await interaction.channel.send(embed=embed)
 
-#     for i in range(len(optie_lijst)):
-#         await poll_bericht.add_reaction(emoji_list[i])
+    for i in range(len(optie_lijst)):
+        await poll_bericht.add_reaction(emoji_list[i])
 
-#     await interaction.response.send_message("✅ Poll geplaatst!", ephemeral=True)
+    await interaction.response.send_message("✅ Poll geplaatst!", ephemeral=True)
 
 
 
