@@ -306,6 +306,18 @@ async def update_dashboard():
             dashboard_message = await channel.send(embed=embed)
             update_dashboard.start()
 
+       
+#handmatig dashboard   
+@bot.tree.command(name="dashboard", description="Toon het huidige serververbruik (CPU, RAM, opslag)")
+async def dashboard(interactie: discord.Interaction):
+    await interactie.response.defer(thinking=True)
+
+    stats = get_system_stats()  # Gebruik je bestaande functie
+    embed = discord.Embed(title="📊 Serververbruik", description=stats, color=discord.Color.blurple())
+    embed.timestamp = datetime.datetime.now()
+
+    await interactie.followup.send(embed=embed)
+       
             
 #poll lijsten 
 @bot.tree.command(name="poll", description="Maak een poll met 2-10 opties, gescheiden door komma's")
