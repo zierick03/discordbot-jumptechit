@@ -16,19 +16,13 @@
 # /faq                – Toont een lijst met veelgestelde vragen uit de database
 # /faq_antwoord       – Geeft antwoord op een specifieke veelgestelde vraag
 #/update titel:Belangrijke Update inhoud:De nieuwe feature is live vanaf maandag!
-
+#/poll vraag:Wat wil je eten? opties:Pizza,Sushi,Burger
 
 #alleen mogelijk  op server waar bot op draait
 # /systemscan         – Haalt systeeminformatie op via het 'systeminfo'-commando (Windows-only)
 # /myip               – Toont het externe IP-adres van de machine waarop de bot draait
 # /traceroute <host>  – Voert een traceroute uit naar de opgegeven host (platform-afhankelijk)
 
-#nog niet werkend 
-#/poll vraag:Wat wil je eten? opties:Pizza,Sushi,Burger
-
-
-#automatische 
-#ieder minuur server update 
 
 import discord
 import random
@@ -41,11 +35,6 @@ import subprocess
 from discord.ext import tasks
 import psutil
 import datetime
-
-
-
-
-
 
 # Kanaal-ID waar dashboard gepost wordt
 DASHBOARD_CHANNEL_ID = 1379833746701684776  # Vervang door jouw kanaal-ID
@@ -229,17 +218,6 @@ async def update(interaction: discord.Interaction, titel: str, inhoud: str):
 
     await interaction.channel.send(embed=embed)
     await interaction.response.send_message("✅ Aankondiging geplaatst!", ephemeral=True)
-
-
-
-# Functie die het dashboard update (zonder loop)
-
-# # Slash command om het dashboard handmatig te updaten
-# @bot.tree.command(name="update_dashboard", description="Update het dashboard handmatig")
-# async def update_dashboard_command(interaction: discord.Interaction):
-#     await send_or_update_dashboard()
-#     await interaction.response.send_message("✅ Dashboard is bijgewerkt!", ephemeral=True)
-
 
 #als je hem opstart dashboard
 async def send_or_update_dashboard():
