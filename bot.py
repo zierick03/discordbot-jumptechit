@@ -35,6 +35,7 @@ import subprocess
 from discord.ext import tasks
 import psutil
 import datetime
+import asyncio
 
 # Kanaal-ID waar dashboard gepost wordt
 DASHBOARD_CHANNEL_ID = 1379833746701684776  # Vervang door jouw kanaal-ID
@@ -324,6 +325,132 @@ async def poll(interaction: discord.Interaction, vraag: str, opties: str):
 
     for i in range(len(optie_lijst)):
         await bericht.add_reaction(emoji_list[i])
+
+    
+#steen papier schaar /rps
+@bot.tree.command(name="rps", description="Speel steen/papier/schaar")
+@app_commands.describe(keuze="Kies steen, papier of schaar")
+async def rps(interaction: discord.Interaction, keuze: str):
+    keuzes = ["steen", "papier", "schaar"]
+    keuze = keuze.lower()
+    if keuze not in keuzes:
+        await interaction.response.send_message("❌ Kies steen, papier of schaar", ephemeral=True)
+        return
+
+    bot_keuze = random.choice(keuzes)
+    resultaat = "Gelijkspel!"
+    if (
+        (keuze == "steen" and bot_keuze == "schaar") or
+        (keuze == "papier" and bot_keuze == "steen") or
+        (keuze == "schaar" and bot_keuze == "papier")
+    ):
+        resultaat = "Jij wint!"
+    elif keuze != bot_keuze:
+        resultaat = "Bot wint!"
+
+    await interaction.response.send_message(f"👤 {keuze} vs 🤖 {bot_keuze} → **{resultaat}**")
+    
+
+        
+        
+#xp systeem /daily
+user_data = {}
+cooldowns = {}
+
+@bot.tree.command(name="daily", description="Claim je dagelijkse reward")
+async def daily(interaction: discord.Interaction):
+    user = interaction.user.id
+    now = datetime.datetime.utcnow()
+
+    if user in cooldowns:
+        diff = now - cooldowns[user]
+        if diff.total_seconds() < 86400:
+            await interaction.response.send_message("⏳ Je hebt al je daily reward geclaimd vandaag!", ephemeral=True)
+            return
+
+    cooldowns[user] = now
+    # Voeg XP of coins toe in een database
+    await interaction.response.send_message("🎁 Je hebt 100 coins ontvangen!")
+    
+#coins aantal zien  /coins
+@bot.tree.command(name="coins", description="Bekijk hoeveel coins je hebt")
+async def coins(interaction: discord.Interaction):
+    user_id = str(interaction.user.id)
+    coins = user_data.get(user_id, 0)
+    
+    await interaction.response.send_message(
+        f"💸 {interaction.user.mention}, je hebt momenteel **{coins} coins**!",
+        ephemeral=False
+    )
+
+
+
+
+
+
+
+#werkt nog niet optimaal
+
+
+
+#geeft alleen terug als nij angemaakt is andere pakt hij niet mee 
+    
+#add event /addevent    
+
+
+EVENT_CHANNEL_ID = 1380125889475645521  # Vul dit in met je eigen kanaal-ID
+events = []
+
+@bot.tree.command(name="addevent", description="Voeg een event toe met herinnering")
+@app_commands.describe(naam="Naam van het event", tijd="DD-MM-YYYY HH:MM (UTC)")
+async def addevent(interaction: discord.Interaction, naam: str, tijd: str):
+    try:
+        tijd_dt = datetime.datetime.strptime(tijd, "%d-%m-%Y %H:%M")
+    except ValueError:
+        await interaction.response.send_message("❌ Tijdformaat moet zijn: DD-MM-YYYY HH:MM", ephemeral=True)
+        return
+
+    async def wait_and_send(seconds, message):
+        wait_time = (tijd_dt - datetime.datetime.utcnow()).total_seconds() - seconds
+        if wait_time > 0:
+            await asyncio.sleep(wait_time)
+            await channel.send(message)
+
+    # Event opslaan
+    events.append((interaction.user.id, naam, tijd_dt))
+    await interaction.response.send_message(f"📅 Event '{naam}' aangemaakt voor {tijd_dt} UTC")
+
+    #haaalt het channel op waar hij word versuutr 
+    channel = bot.get_channel(EVENT_CHANNEL_ID)
+
+    # Herinnering 1 uur van tevoren
+    # await asyncio.sleep((tijd_dt - datetime.datetime.utcnow()).total_seconds() - 3600)
+    # if channel:
+    #     await channel.send(f"🔔 Herinnering: Event '**{naam}**' begint over 1 uur! (aangemaakt door {interaction.user.mention})")
+
+    # Aanmaakmelding (direct)
+    await channel.send(f"📝 Event '**{naam}**' is aangemaakt door {interaction.user.mention} en gepland op {tijd_dt} UTC.")
+
+    # 1 maand (~30 dagen) van tevoren
+    await wait_and_send(3600*24*30, f"🔔 Herinnering: Event '**{naam}**' begint over 1 maand! (aangemaakt door {interaction.user.mention})")
+
+    # 1 week van tevoren
+    await wait_and_send(3600*24*7, f"🔔 Herinnering: Event '**{naam}**' begint over 1 week! (aangemaakt door {interaction.user.mention})")
+
+    # 1 dag van tevoren
+    await wait_and_send(3600*24, f"🔔 Herinnering: Event '**{naam}**' begint over 1 dag! (aangemaakt door {interaction.user.mention})")
+
+    # 5 uur van tevoren
+    await wait_and_send(3600*5, f"🔔 Herinnering: Event '**{naam}**' begint over 5 uur! (aangemaakt door {interaction.user.mention})")
+
+    # 1 uur van tevoren
+    await wait_and_send(3600, f"🔔 Herinnering: Event '**{naam}**' begint over 1 uur! (aangemaakt door {interaction.user.mention})")
+        
+        
+        
+
+
+
 
                   
 # Event: Bot is online
