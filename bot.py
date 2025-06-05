@@ -470,3 +470,5 @@ async def on_ready():
 
 # Start de bot
 bot.run("MTM2MTk3NDAzNjQyMjIwMTM4NA.GVvq-F.C22fIfMfMyFyiv3FTNQzZAAUeR_bj43idbibPw")  # Vergeet je token niet te beveiligen!
+
+
