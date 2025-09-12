@@ -1,6 +1,9 @@
 # Vereiste packages installeren:
 # pip install discord.py mysql-connector-python
 #pip install psutil
+#C:\Python312\python.exe -m pip install -U discord.py
+#C:\Python312\python.exe -m pip install mysql-connector-python
+#C:\Python312\python.exe -m pip install psutil
 
 
 
@@ -424,8 +427,6 @@ async def coins(interaction: discord.Interaction):
         ephemeral=False
     )
 
-
-
 #staat op utc == amsterdam -2 uur kijken of ik dat kan aanpassen 
     
 #add event /addevent    
@@ -478,9 +479,8 @@ async def addevent(interaction: discord.Interaction, naam: str, tijd: str):
 
     # 1 uur van tevoren
     await wait_and_send(3600, f"🔔 Herinnering: Event '**{naam}**' begint over 1 uur! (aangemaakt door {interaction.user.mention})")
+  
         
-
-
 # Event: Bot is online
 @bot.event
 async def on_ready():
@@ -498,6 +498,3 @@ async def on_ready():
 
 # Start de bot
 bot.run("MTM2MTk3NDAzNjQyMjIwMTM4NA.GVvq-F.C22fIfMfMyFyiv3FTNQzZAAUeR_bj43idbibPw")  # Vergeet je token niet te beveiligen!
-
-
-#
