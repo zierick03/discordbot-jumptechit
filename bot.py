@@ -1,4 +1,5 @@
 #aan GITHUB gekoppeld test 6
+#aan argoCD gekoppeld test 1
 
 
 # Vereiste packages installeren:
