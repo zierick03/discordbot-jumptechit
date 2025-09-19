@@ -18,7 +18,7 @@ EXPOSE 8080
 CMD ["python", "bot.py"]
 
 
-
+#..
 # # Gebruik een officieel Python 3.11.9 image
 # FROM python:3.10.12
 
