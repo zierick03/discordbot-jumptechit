@@ -567,33 +567,53 @@ async def on_ready():
 # --- Stel je server-MAC hier in ---
 SERVER_MAC = "90-FB-A6-80-08-C4"
 
-# Hulpfunctie Wake-on-LAN
+# --- Zet dit op True op de machine die WOL mag sturen ---
+IS_MASTER = True  # Zet op False op andere plekken
+
+# --- Hulpfunctie Wake-on-LAN ---
 def send_wol(mac: str):
-    import socket, re
+    """
+    Stuurt een Wake-on-LAN (WOL) magic packet.
+    Werkt alleen binnen hetzelfde LAN.
+    """
     mac_clean = re.sub(r'[^0-9A-Fa-f]', '', mac)
     if len(mac_clean) != 12:
         raise ValueError("Ongeldig MAC-adres. Voorbeeld: AA:BB:CC:DD:EE:FF")
+    
     mac_bytes = bytes.fromhex(mac_clean)
     packet = b'\xff' * 6 + mac_bytes * 16
+
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as s:
         s.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
         s.sendto(packet, ("255.255.255.255", 9))
 
-# Slash-command zonder parameter
+# --- Slash-command voor WOL ---
 @bot.tree.command(name="wake", description="Weet de server wakker")
 async def slash_wake(interaction: discord.Interaction):
     await interaction.response.defer(thinking=True)
+    if not IS_MASTER:
+        await interaction.followup.send(
+            "❌ Deze bot is geen master en mag de server niet wakker maken.",
+            ephemeral=True
+        )
+        return
     try:
-        send_wol(SERVER_MAC)  # <--- Vaste MAC wordt gebruikt
-        await interaction.followup.send(f"✅ Magic packet verzonden naar server `{SERVER_MAC}`", ephemeral=True)
+        send_wol(SERVER_MAC)
+        await interaction.followup.send(
+            f"✅ Magic packet verzonden naar server `{SERVER_MAC}`",
+            ephemeral=True
+        )
     except Exception as e:
         await interaction.followup.send(f"❌ Kon WOL niet versturen: `{e}`", ephemeral=True)
 
-# Prefix-command !wake
+# --- Prefix-command !wake ---
 @bot.command(name="wake")
 async def wake_cmd(ctx):
+    if not IS_MASTER:
+        await ctx.send("❌ Deze bot is geen master en mag de server niet wakker maken.")
+        return
     try:
-        send_wol(SERVER_MAC)  # <--- Vaste MAC wordt gebruikt
+        send_wol(SERVER_MAC)
         await ctx.send(f"✅ Magic packet verzonden naar server `{SERVER_MAC}`")
     except Exception as e:
         await ctx.send(f"❌ Kon WOL niet versturen: `{e}`")
