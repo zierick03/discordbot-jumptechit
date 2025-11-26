@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: discord-bot
-  namespace: default
+  namespace: discord-bot
 spec:
   replicas: 1
   selector:
@@ -14,12 +14,45 @@ spec:
         app: discord-bot
     spec:
       containers:
-      - name: discord-bot
-        image: ghcr.io/zierick03/discordbot-jumptechit:latest
-        imagePullPolicy: Always
-        env:
-        - name: DISCORD_TOKEN
-          valueFrom:
-            secretKeyRef:
-              name: discord-bot-secret
-              key: token
+        - name: discord-bot
+          image: zierick03/discordbot:latest 
+          # ghcr.io/zierick03/discordbot-jumptechit:latest
+          imagePullPolicy: Always
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - pp-worker1
+                      - pp-worker2
+                      - pp-worker4
+
+
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: discord-bot
+#   namespace: discord-bot
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: discord-bot
+#   template:
+#     metadata:
+#       labels:
+#         app: discord-bot
+#     spec:
+#       containers:
+#       - name: discord-bot
+#         image: ghcr.io/zierick03/discordbot-jumptechit:latest
+#         imagePullPolicy: Always
+#         env:
+#         - name: DISCORD_TOKEN
+#           valueFrom:
+#             secretKeyRef:
+#               name: discord-bot-secret
+#               key: token
