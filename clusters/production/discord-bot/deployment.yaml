@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: discord-bot
-          image: ghcr.io/zierick03/discordbot:latest
+          image: ghcr.io/zierick03/discordbot-jumptechit:latest
           imagePullPolicy: Always
           env:
             - name: DISCORD_TOKEN
@@ -25,17 +25,17 @@ spec:
                   key: token
       imagePullSecrets:
         - name: ghcr-secret
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-              - matchExpressions:
-                  - key: kubernetes.io/hostname
-                    operator: In
-                    values:
-                      - pp-worker1
-                      - pp-worker2
-                      - pp-worker4
+      # affinity:
+      #   nodeAffinity:
+      #     requiredDuringSchedulingIgnoredDuringExecution:
+      #       nodeSelectorTerms:
+      #         - matchExpressions:
+      #             - key: kubernetes.io/hostname
+      #               operator: In
+      #               values:
+      #                 - pp-worker1
+      #                 - pp-worker2
+      #                 - pp-worker4
 
 
 
