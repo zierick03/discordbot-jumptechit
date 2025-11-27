@@ -15,7 +15,8 @@ spec:
     spec:
       containers:
         - name: discord-bot
-          image: zierick03/discordbot:latest
+          image: ghcr.io/zierick03/discordbot-jumptechit:latest
+          #image: zierick03/discordbot:latest
           imagePullPolicy: Always
           env:
             - name: DISCORD_TOKEN
