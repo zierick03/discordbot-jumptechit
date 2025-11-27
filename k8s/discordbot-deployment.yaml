@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
         - name: discordbot
-          image: zierick03/discordbot:latest
+          image: zierick03/discordbot-JumpTechIT:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 8080
