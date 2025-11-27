@@ -22,7 +22,8 @@ spec:
           ports:
             - containerPort: 8080
       imagePullSecrets:
-        - name: discordbot-secret
+        - name: dockerhub-secret 
+        #discordbot-secret
 
 ---
 apiVersion: v1
