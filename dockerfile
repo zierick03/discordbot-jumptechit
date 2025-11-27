@@ -1,24 +1,62 @@
-# # Gebruik een officieel Python 3.11.9 image
-# FROM python:3.14.0rc2
-# # Gebruik een officieel Python 3.10 image
-# FROM python:3.14.0rc3
-FROM python:3.14.0
+FROM python:3.11-slim
 
-# Maak een directory voor je app in de container
+# Installeer systeem-dependencies die nodig zijn voor audio en andere modules
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libffi-dev \
+    libsndfile1 \
+    && rm -rf /var/lib/apt/lists/*
+
+# Maak een directory voor de bot
 WORKDIR /bot
 
-# Kopieer requirements.txt en installeer dependencies
+# Kopieer requirements en installeer Python-dependencies
 COPY requirements.txt /bot/requirements.txt
 RUN pip install --no-cache-dir -r /bot/requirements.txt
 
-# Kopieer de volledige applicatie naar de container
+# Kopieer de volledige applicatie
 COPY . /bot
 
-# Stel de poort in waarop de bot draait (optioneel)
-EXPOSE 8080
-
-# Start de bot wanneer de container draait
+# Start de bot
 CMD ["python", "bot.py"]
+
+
+
+
+
+# # # Gebruik een officieel Python 3.11.9 image
+# # FROM python:3.14.0rc2
+# # # Gebruik een officieel Python 3.10 image
+# # FROM python:3.14.0rc3
+# FROM python:3.11-slim  
+
+# #FROM python:3.14.0
+
+# # Maak een directory voor je app in de container
+# WORKDIR /bot
+
+# # Kopieer requirements.txt en installeer dependencies
+# COPY requirements.txt /bot/requirements.txt
+# RUN pip install --no-cache-dir -r /bot/requirements.txt
+
+# # Kopieer de volledige applicatie naar de container
+# COPY . /bot
+
+# # Stel de poort in waarop de bot draait (optioneel)
+# EXPOSE 8080
+
+# # Start de bot wanneer de container draait
+# CMD ["python", "bot.py"]
+
+
+
+
+
+
+
+
+
+
 
 
 #..
