@@ -484,7 +484,7 @@ async def addevent(interaction: discord.Interaction, naam: str, tijd: str):
 
     # 1 uur van tevoren
     await wait_and_send(3600, f"🔔 Herinnering: Event '**{naam}**' begint over 1 uur! (aangemaakt door {interaction.user.mention})")
-  
+
         
 # Event: Bot is online
 @bot.event
