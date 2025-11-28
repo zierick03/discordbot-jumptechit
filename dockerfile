@@ -1,19 +1,50 @@
-FROM python:3.11-slim
+FROM python:3.14-slim
 
 WORKDIR /bot
 
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libffi-dev \
-    libsndfile1 \
-    && rm -rf /var/lib/apt/lists/*
-
-COPY requirements.txt /bot/requirements.txt
+COPY requirements.txt /bot/
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . /bot
 
 CMD ["python", "bot.py"]
+
+
+
+
+
+
+
+
+
+
+
+
+
+# FROM python:3.11-slim
+
+# WORKDIR /bot
+
+# RUN apt-get update && apt-get install -y \
+#     build-essential \
+#     libffi-dev \
+#     libsndfile1 \
+#     && rm -rf /var/lib/apt/lists/*
+
+# COPY requirements.txt /bot/requirements.txt
+# RUN pip install --no-cache-dir -r requirements.txt
+
+# COPY . /bot
+# CMD ["python", "bot.py"]
+
+
+
+
+
+
+
+
+
 
 
 
