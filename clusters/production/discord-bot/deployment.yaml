@@ -1,29 +1,29 @@
-#deploying op pvc
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: discord-bot
-  namespace: discord-bot
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: discord-bot
-  template:
-    metadata:
-      labels:
-        app: discord-bot
-    spec:
-      containers:
-        - name: discord-bot
-          image: jouw-bot-image:latest
-          volumeMounts:
-            - mountPath: /data   # waar de bot zijn bestanden in de container opslaat
-              name: bot-storage
-      volumes:
-        - name: bot-storage
-          persistentVolumeClaim:
-            claimName: bot-pvc
+# #deploying op pvc
+# apiVersion: apps/v1
+# kind: Deployment
+# metadata:
+#   name: discord-bot
+#   namespace: discord-bot
+# spec:
+#   replicas: 1
+#   selector:
+#     matchLabels:
+#       app: discord-bot
+#   template:
+#     metadata:
+#       labels:
+#         app: discord-bot
+#     spec:
+#       containers:
+#         - name: discord-bot
+#           image: jouw-bot-image:latest
+#           volumeMounts:
+#             - mountPath: /data   # waar de bot zijn bestanden in de container opslaat
+#               name: bot-storage
+#       volumes:
+#         - name: bot-storage
+#           persistentVolumeClaim:
+#             claimName: bot-pvc
 
 
 
@@ -63,34 +63,34 @@ spec:
 
 
 
-# apiVersion: apps/v1
-# kind: Deployment
-# metadata:
-#   name: discord-bot
-#   namespace: discord-bot
-# spec:
-#   replicas: 1
-#   selector:
-#     matchLabels:
-#       app: discord-bot
-#   template:
-#     metadata:
-#       labels:
-#         app: discord-bot
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: discord-bot
+  namespace: discord-bot
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: discord-bot
+  template:
+    metadata:
+      labels:
+        app: discord-bot
         
-#     spec:
-#       containers:
-#       - name: discord-bot
-#         image: zierick03/discordbot:latest
-#         imagePullPolicy: Always
-#         env:
-#           - name: DISCORD_TOKEN
-#             valueFrom:
-#               secretKeyRef:
-#                 name: discord-bot-secret
-#                 key: token
-#       imagePullSecrets:
-#         - name: dockerhub-secret
+    spec:
+      containers:
+      - name: discord-bot
+        image: zierick03/discordbot:latest
+        imagePullPolicy: Always
+        env:
+          - name: DISCORD_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: discord-bot-secret
+                key: token
+      imagePullSecrets:
+        - name: dockerhub-secret
 
 
 
